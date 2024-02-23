@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { uploadOnCloudinary, deleteOnCloudinary } from "../utils/cloudinary.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, username, email, password } = req.body;
@@ -194,7 +194,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  return res.status(200).json(200, req.user, "Current User");
+  return res.status(200).json(new ApiResponse(200, req.user, "Current User"));
 });
 
 const updateAccount = asyncHandler(async (req, res) => {
@@ -224,7 +224,6 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar file is missing");
   }
-
   const avatar = await uploadOnCloudinary(avatarLocalPath);
 
   if (!avatar.secure_url) {
@@ -241,7 +240,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
       new: true,
     }
   ).select("-password");
-
+  deleteOnCloudinary(avatarLocalPath);
   return res.status(200).json(200, user, "Avatar updated successfully");
 });
 
@@ -268,7 +267,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
       new: true,
     }
   ).select("-password");
-
+  deleteOnCloudinary(coverImageLocalPath);
   return res
     .status(200)
     .json(new ApiResponse(200, user, "Cover Image updated successfully"));
