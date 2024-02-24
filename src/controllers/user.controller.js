@@ -4,6 +4,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary, deleteOnCloudinary } from "../utils/cloudinary.js";
+import mongoose from "mongoose";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, username, email, password } = req.body;
@@ -104,7 +105,7 @@ const loginUser = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        { user: loginUser, accessToken, refreshToken },
+        { user: loggedInUser, accessToken, refreshToken },
         "User logged in successfully"
       )
     );
@@ -141,6 +142,10 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     throw new ApiError(401, "unauthorized request");
   }
 
+  const tokenRegex = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_.+/=]*$/;
+  if (!tokenRegex.test(incomingRefreshToken)) {
+    throw new ApiError(401, "Unauthorized request, Malformed JWT token");
+  }
   try {
     const decodedToken = jwt.verify(
       incomingRefreshToken,
@@ -152,9 +157,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       throw new ApiError(401, "Invalid refresh token");
     }
 
-    // if (incomingRefreshToken !== user?.refreshToken) {
-    //   throw new ApiError(401, "Refresh token is expired or used")
-    // }
     if (incomingRefreshToken !== user?.refreshToken) {
       throw new ApiError(401, "Refresh token is expired or used");
     }
@@ -349,7 +351,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
   const user = await User.aggregate([
     {
       $match: {
-        _id: new mongoose.Types.ObjectId(req.user._id),
+        _id: new mongoose.Schema.Types.ObjectId(req.user._id),
       },
     },
     {
