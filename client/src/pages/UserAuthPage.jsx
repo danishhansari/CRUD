@@ -1,12 +1,77 @@
 import { useContext } from "react";
 import AnimationWrapper from "../common/AnimationWrapper";
 import { UserContext } from "../App";
-import { Toaster } from "react-hot-toast";
-import { Navigate, Link } from "react-router-dom";
+import { Toaster, toast } from "react-hot-toast";
+import { Navigate, Link, useNavigate } from "react-router-dom";
 import InputBox from "../components/InputBox";
+import { storeInSession } from "../common/session";
+import axios from "axios";
 
 const UserAuthPage = ({ type }) => {
-  const handleSubmit = () => {};
+  const navigate = useNavigate();
+  const userAuthThroughtServer = (serverRoute, formData) => {
+    let loadingToast = toast.loading(
+      serverRoute === "signin" ? "logging" : "creating new user"
+    );
+    axios
+      .post(
+        `${import.meta.env.VITE_SERVER}/api/v1/users/${serverRoute}`,
+        formData
+      )
+      .then(({ data }) => {
+        storeInSession("user", JSON.stringify(data));
+        toast.dismiss(loadingToast);
+        console.log(data);
+        setUserAuth(data);
+        toast.success("authentication successful");
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.dismiss(loadingToast);
+        return toast.error(err.response.data);
+      });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+
+    let serverRoute = type === "sign-in" ? "signin" : "signup";
+
+    let form = new FormData(formElement);
+    const formData = {};
+
+    for (const [key, value] of form.entries()) {
+      formData[key] = value;
+    }
+    console.log(formData);
+    const { fullName, email, password, username } = formData;
+
+    if (fullName && fullName.length < 3) {
+      return toast.error("Name must be at least 3 letters long");
+    }
+    if (username && username.length < 3) {
+      return toast.error("username must be at least 3 letters long");
+    }
+    if (type === "signup") {
+      if (!email.length) {
+        return toast.error("Email cannot be empty");
+      }
+      if (!emailRegex.test(email)) {
+        return toast.error("Email is invalid");
+      }
+    }
+    if (!passwordRegex.test(password)) {
+      return toast.error(
+        "Password should be 6 to 20 character password long with a numeric, 1 lowercase and 1 uppercase letter"
+      );
+    }
+    userAuthThroughtServer(serverRoute, formData);
+  };
+
   const {
     userAuth: { access_token },
     setUserAuth,
@@ -25,24 +90,26 @@ const UserAuthPage = ({ type }) => {
             </h1>
 
             {type !== "sign-in" ? (
-              <InputBox
-                type="text"
-                name="fullname"
-                placeholder="Full Name"
-                id="fullname"
-                icon="fi fi-rr-user"
-              />
+              <>
+                <InputBox
+                  type="text"
+                  name="fullName"
+                  placeholder="Full Name"
+                  id="fullname"
+                  icon="fi fi-rr-user"
+                />
+                <InputBox
+                  name="email"
+                  type="email"
+                  placeholder="Email"
+                  id="email"
+                  icon="fi-rr-envelope"
+                />
+              </>
             ) : (
               ""
             )}
 
-            <InputBox
-              name="email"
-              type="email"
-              placeholder="Email"
-              id="email"
-              icon="fi-rr-envelope"
-            />
             <InputBox
               type="text"
               name="username"
@@ -60,7 +127,7 @@ const UserAuthPage = ({ type }) => {
 
             <button
               onClick={handleSubmit}
-              className="bg-black text-white py-2 px-4 rounded-full capitalize  block mx-auto"
+              className="bg-black text-white py-3 px-6 inter hover:bg-black/80 transition-colors duration-100 font-medium rounded-full capitalize  block mx-auto"
               type="submit"
             >
               {type.replace("-", " ")}

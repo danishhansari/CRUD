@@ -15,7 +15,7 @@ function App() {
 
     userInSession
       ? setUserAuth(JSON.parse(userInSession))
-      : setUserAuth({ access_token: null });
+      : setUserAuth({ accessToken: null });
   }, []);
 
   return (

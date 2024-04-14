@@ -5,7 +5,7 @@ import { Navigate } from "react-router-dom";
 
 const Home = () => {
   const {
-    userAuth: { access_token },
+    userAuth: { accessToken },
     setUserAuth,
   } = useContext(UserContext);
   useEffect(() => {
@@ -15,7 +15,7 @@ const Home = () => {
       ? setUserAuth(JSON.parse(userInSession))
       : setUserAuth({ access_token: null });
   });
-  return !access_token ? <Navigate to="signup" /> : <div>Home</div>;
+  return !accessToken ? <Navigate to="signup" /> : <div>Home</div>;
 };
 
 export default Home;

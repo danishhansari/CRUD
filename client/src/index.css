@@ -11,7 +11,8 @@
 .inter,
 p,
 a,
-li {
+li,
+input {
   font-family: "Inter", "sans-serif";
 }
 

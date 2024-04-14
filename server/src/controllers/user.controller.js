@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, username, email, password } = req.body;
+  console.log({ fullName, username, email, password });
   if (
     [fullName, username, email, password].some((field) => field?.trim() === "")
   ) {
@@ -19,26 +20,34 @@ const registerUser = asyncHandler(async (req, res) => {
   if (existedUser) {
     throw new ApiError(409, "User is already exists");
   }
-  const avatarLocalPath = req.files?.avatar[0]?.path;
-  const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
-  if (!avatarLocalPath) {
-    throw new ApiError(400, "Avatar file is required issue in localfile path");
-  }
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
-  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+  // const avatarLocalPath = req.files?.avatar[0]?.path;
+  // const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+  // if (!avatarLocalPath) {
+  //   throw new ApiError(400, "Avatar file is required issue in localfile path");
+  // }
+  // const avatar = await uploadOnCloudinary(avatarLocalPath);
+  // const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
-  if (!avatar) {
-    throw new ApiError(400, "Avatar file is required");
-  }
-  console.log(avatar.url);
+  // if (!avatar) {
+  //   throw new ApiError(400, "Avatar file is required");
+  // }
+  // console.log(avatar.url);
+  // const user = await User.create({
+  //   fullName,
+  //   avatar: avatar.secure_url,
+  //   coverImage: coverImage?.secure_url || "",
+  //   email,
+  //   password,
+  //   username: username.toLowerCase(),
+  // });
+
   const user = await User.create({
     fullName,
-    avatar: avatar.secure_url,
-    coverImage: coverImage?.secure_url || "",
     email,
     password,
     username: username.toLowerCase(),
   });
+
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
