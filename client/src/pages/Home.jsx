@@ -1,21 +1,17 @@
-import { useContext, useEffect } from "react";
-import { lookInSession } from "../common/session";
-import { UserContext } from "../App";
-import { Navigate } from "react-router-dom";
-
+import { useEffect } from "react";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 const Home = () => {
-  const {
-    userAuth: { accessToken },
-    setUserAuth,
-  } = useContext(UserContext);
-  useEffect(() => {
-    const userInSession = lookInSession("user");
+  const navigate = useNavigate();
 
-    userInSession
-      ? setUserAuth(JSON.parse(userInSession))
-      : setUserAuth({ access_token: null });
-  });
-  return !accessToken ? <Navigate to="signup" /> : <div>Home</div>;
+  useEffect(() => {
+    const accessToken = Cookies.get("accessToken");
+    if (!accessToken) {
+      navigate("/signup");
+    }
+  }, []);
+
+  return <div>Home</div>;
 };
 
 export default Home;

@@ -1,11 +1,9 @@
-import { useContext } from "react";
 import AnimationWrapper from "../common/AnimationWrapper";
-import { UserContext } from "../App";
 import { Toaster, toast } from "react-hot-toast";
-import { Navigate, Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import InputBox from "../components/InputBox";
-import { storeInSession } from "../common/session";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const UserAuthPage = ({ type }) => {
   const navigate = useNavigate();
@@ -18,18 +16,17 @@ const UserAuthPage = ({ type }) => {
         `${import.meta.env.VITE_SERVER}/api/v1/users/${serverRoute}`,
         formData
       )
-      .then(({ data }) => {
-        storeInSession("user", JSON.stringify(data));
+      .then(({ data: { data } }) => {
         toast.dismiss(loadingToast);
-        console.log(data);
-        setUserAuth(data);
         toast.success("authentication successful");
+        console.log(data);
+        Cookies.set("accessToken", data.accessToken);
         navigate("/");
       })
       .catch((err) => {
         console.log(err);
         toast.dismiss(loadingToast);
-        return toast.error(err.response.data);
+        return toast.error(err.message);
       });
   };
 
@@ -72,14 +69,7 @@ const UserAuthPage = ({ type }) => {
     userAuthThroughtServer(serverRoute, formData);
   };
 
-  const {
-    userAuth: { access_token },
-    setUserAuth,
-  } = useContext(UserContext);
-
-  return access_token ? (
-    <Navigate to={"/"} />
-  ) : (
+  return (
     <>
       <AnimationWrapper keyValue={type}>
         <Toaster position="top-center" />
