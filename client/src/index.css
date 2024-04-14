@@ -1,3 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Gelasio&family=Inter:wght@400;500&display=swap");
+@import "@flaticon/flaticon-uicons/css/all/all";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.heading {
+  font-family: "Gelasio", "serif";
+}
+.inter,
+p,
+a,
+li {
+  font-family: "Inter", "sans-serif";
+}
+
+.h-cover {
+  min-height: calc(100vh - 80px);
+}
+.input-box {
+  width: 100%;
+  border-radius: 0.375rem;
+  padding: 1rem;
+  background-color: rgba(237, 242, 242, 0.648);
+  padding-left: 3rem;
+  border: 1px solid #edf2f262;
+}
+.input-box::placeholder {
+  color: black;
+}
+.input-box:focus {
+  background: transparent;
+}
+.input-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
