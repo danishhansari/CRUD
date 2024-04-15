@@ -30,6 +30,7 @@ const UserAuthPage = ({ type }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     let serverRoute = type === "sign-in" ? "signin" : "signup";
+    console.log(`${import.meta.env.VITE_SERVER}/api/v1/users/${serverRoute}`);
 
     const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
