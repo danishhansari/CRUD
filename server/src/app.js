@@ -20,6 +20,10 @@ import userRouter from "./routes/user.router.js";
 
 app.use("/api/v1/users", userRouter);
 
+app.get("/", (req, res) => {
+  return res.status(200).json({ message: "App is running fine" });
+});
+
 app.use((err, req, res, next) => {
   if (err) {
     res.status(500).json({ error: err.message });
