@@ -18,7 +18,9 @@ const UserAuthPage = ({ type }) => {
         toast.dismiss(loadingToast);
         toast.success("authentication successful");
         console.log(data);
-        Cookies.set("accessToken", data.accessToken);
+        if (type === "signin") {
+          Cookies.set("accessToken", data.accessToken);
+        }
         navigate("/");
       })
       .catch((err) => {
