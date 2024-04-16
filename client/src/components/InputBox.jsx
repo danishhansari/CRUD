@@ -6,8 +6,10 @@ const InputBox = ({
   id,
   placeholder,
   icon,
+  defaultValue,
   value,
   disable = false,
+  className = "",
 }) => {
   const [passwordVisiblity, setPasswordVisiblity] = useState(false);
   return (
@@ -15,7 +17,7 @@ const InputBox = ({
       <div className="relative w-full mb-4">
         <input
           name={name}
-          defaultValue={value}
+          defaultValue={defaultValue}
           value={value}
           type={
             type === "password"
@@ -24,7 +26,7 @@ const InputBox = ({
                 : "password"
               : type
           }
-          className="input-box"
+          className={`input-box ${className}`}
           disabled={disable}
           placeholder={placeholder}
           id={id}

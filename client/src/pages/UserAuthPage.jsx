@@ -77,7 +77,7 @@ const UserAuthPage = ({ type }) => {
         <Toaster position="top-center" />
         <section className="h-cover flex items-center justify-center">
           <form id="formElement" className="w-[80%] max-w-[400px]">
-            <h1 className="text-4xl font-gelasio capitalize text-center mb-16">
+            <h1 className="text-4xl font-gelasio capitalize text-center mb-8 md:mb-16">
               {type === "sign-in" ? "Welcome back" : "Join us today"}
             </h1>
 

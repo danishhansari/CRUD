@@ -17,20 +17,26 @@ const Navbar = () => {
         </Link>
 
         {accessToken ? (
-          <>
+          <div className="flex gap-4 items-center">
+            <Link to='/change-password'>
+              <button className="py-2 px-4 bg-black hover:bg-black/80 text-white rounded-full">
+                Change password
+              </button>
+            </Link>
             <Link>
               <img className="w-10 rounded-full" src={user.avatar} alt="" />
             </Link>
-          </>
+            <Link></Link>
+          </div>
         ) : (
           <div className="flex gap-4 items-center">
             <Link to="/signup">
-              <button className="py-2 px-6 bg-black text-white rounded-full">
+              <button className="py-2 px-6 bg-black hover:bg-black/80 text-white rounded-full">
                 Signup
               </button>
             </Link>
-            <Link to="/signup" className="hidden md:block">
-              <button className="py-2 px-6 bg-gray-100 text-black rounded-full">
+            <Link to="/signin" className="hidden md:block">
+              <button className="py-2 px-6 bg-gray-100 text-black hover:bg-gray-200 transition-colors duration-75 rounded-full">
                 Signin
               </button>
             </Link>
