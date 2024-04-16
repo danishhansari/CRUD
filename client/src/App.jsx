@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import UserAuthPage from "./pages/UserAuthPage";
 import { useState, useEffect } from "react";
 import Home from "./pages/Home";
-
 import Cookies from "js-cookie";
 
 function App() {
@@ -25,7 +24,6 @@ function App() {
       setAccessToken(token);
     }
   }, []);
-  console.log(accessToken);
   return (
     <>
       <Router>

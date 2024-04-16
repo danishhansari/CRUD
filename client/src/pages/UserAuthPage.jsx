@@ -11,14 +11,9 @@ const UserAuthPage = ({ type }) => {
     let loadingToast = toast.loading(
       serverRoute === "signin" ? "logging" : "creating new user"
     );
+
     axios
-      .post(
-        `${import.meta.env.VITE_SERVER}/api/users/${serverRoute}`,
-        formData,
-        {
-          withCredentials: true,
-        }
-      )
+      .post(`${import.meta.env.VITE_SERVER}/api/users/${serverRoute}`, formData)
       .then(({ data: { data } }) => {
         toast.dismiss(loadingToast);
         toast.success("authentication successful");
@@ -29,7 +24,8 @@ const UserAuthPage = ({ type }) => {
       .catch((err) => {
         console.log(err);
         toast.dismiss(loadingToast);
-        return toast.error(err.message);
+        const message = err.response.data.message;
+        return toast.error(message);
       });
   };
 

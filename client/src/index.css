@@ -5,15 +5,11 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  font-family: "Inter", "sans-serif";
+}
 .heading {
   font-family: "Gelasio", "serif";
-}
-.inter,
-p,
-a,
-li,
-input {
-  font-family: "Inter", "sans-serif";
 }
 
 .h-cover {
