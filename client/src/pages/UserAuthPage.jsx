@@ -12,7 +12,13 @@ const UserAuthPage = ({ type }) => {
       serverRoute === "signin" ? "logging" : "creating new user"
     );
     axios
-      .post(`${import.meta.env.VITE_SERVER}/api/users/${serverRoute}`, formData)
+      .post(
+        `${import.meta.env.VITE_SERVER}/api/users/${serverRoute}`,
+        formData,
+        {
+          withCredentials: true,
+        }
+      )
       .then(({ data: { data } }) => {
         toast.dismiss(loadingToast);
         toast.success("authentication successful");
@@ -30,7 +36,6 @@ const UserAuthPage = ({ type }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     let serverRoute = type === "sign-in" ? "signin" : "signup";
-    console.log(`${import.meta.env.VITE_SERVER}/api/v1/users/${serverRoute}`);
 
     const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
