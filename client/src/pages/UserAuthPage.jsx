@@ -17,11 +17,13 @@ const UserAuthPage = ({ type }) => {
       .then(({ data: { data } }) => {
         toast.dismiss(loadingToast);
         toast.success("authentication successful");
-        console.log(data);
-        if (type === "signin") {
+        if (type === "sign-up") {
+          return navigate("/signin");
+        } else {
           Cookies.set("accessToken", data.accessToken);
+          Cookies.set("refreshToken", data.refreshToken);
+          return navigate("/");
         }
-        navigate("/");
       })
       .catch((err) => {
         console.log(err);

@@ -1,37 +1,25 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import UserAuthPage from "./pages/UserAuthPage";
-import { useState, useEffect } from "react";
+import { useState, createContext } from "react";
 import Home from "./pages/Home";
-import Cookies from "js-cookie";
+import Navbar from "./components/Navbar";
 
+export const UserContext = createContext({});
 function App() {
-  const [accessToken, setAccessToken] = useState("");
-  useEffect(() => {
-    const getAccessTokenFromCookie = () => {
-      const cookies = document.cookie.split(";");
-      for (let cookie of cookies) {
-        const [name, value] = cookie.split("=");
-        if (name.trim() === "accessToken") {
-          return decodeURIComponent(value);
-        }
-      }
-      return null;
-    };
+  const [user, setUser] = useState({});
 
-    // Retrieve access token when component mounts
-    const token = getAccessTokenFromCookie();
-    if (token) {
-      setAccessToken(token);
-    }
-  }, []);
   return (
     <>
       <Router>
-        <Routes>
-          <Route path="/signup" element={<UserAuthPage type="sign-up" />} />
-          <Route path="/signin" element={<UserAuthPage type="sign-in" />} />
-          <Route path="/" element={<Home />} />
-        </Routes>
+        <UserContext.Provider value={{ user, setUser }}>
+          <Routes>
+            <Route path="/" element={<Navbar />}>
+              <Route index element={<Home />} />
+              <Route path="/signup" element={<UserAuthPage type="sign-up" />} />
+              <Route path="/signin" element={<UserAuthPage type="sign-in" />} />
+            </Route>
+          </Routes>
+        </UserContext.Provider>
       </Router>
     </>
   );
